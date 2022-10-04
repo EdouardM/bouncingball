@@ -31,12 +31,10 @@ function draw() {
   stroke(255);
   strokeWeight(4);
   
-  if ((x + dX + diam / 2) > width || (x + dX - diam/2) < 0) {
+  if ((x + dX + diam/2) > width || (x + dX - diam / 2) < 0) {
     dX = dX * -1;
-
-  }
-
-  if ((y + dY + diam / 2) > height || (y + dY - diam/2) < 0) {
+  } 
+  if ((y + dY + diam/2) > height || (y + dY - diam/2) < 0) {
     dY = dY * -1;
   }
 
@@ -50,5 +48,16 @@ function draw() {
 
   circle(x, y,diam);
 
+}
+
+class Ball {
+  constructor (x, y, direction, speed) {
+    this.x = x;
+    this.y = y;
+    this.dX = cos(direction) * speed;
+    this.dY = sin(direction) * speed;
+    this.r = diam / 2;
+    this.stop = false;
+  }
 
 }
