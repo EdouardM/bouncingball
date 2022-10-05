@@ -1,19 +1,27 @@
-let x, y, diam, dX, dY, direction, speed;
-let stop;
-angleMode(RADIANS);
+let stop, bubble, bubble2;
 
 function setup() {
-  createCanvas(800, 800);
+  createCanvas(800, 700);
   
   //* Initialize variables
-  x = width /2;
-  y = height / 2;
-  direction = random(0, PI);
-  speed = 10;
-  dX = cos(direction) * speed;
-  dY = sin(direction) * speed;
-  diam = 100;
   stop = false;
+
+  bubble = new Ball(
+    width /2
+    , height / 2
+    , random(0, PI)
+    , 10
+    , 100
+  )
+  
+  bubble2 = new Ball(
+    width /4
+    , height /4
+    , random(0, PI)
+    , 10
+    , 100
+  )
+
 }
 
 //* Switch the stop variale
@@ -28,36 +36,51 @@ function mousePressed() {
 
 function draw() {
   background(0);
-  stroke(255);
-  strokeWeight(4);
-  
-  if ((x + dX + diam/2) > width || (x + dX - diam / 2) < 0) {
-    dX = dX * -1;
-  } 
-  if ((y + dY + diam/2) > height || (y + dY - diam/2) < 0) {
-    dY = dY * -1;
-  }
 
-  //* Update X position if stop is false
-  if (stop == false) {
-    x += dX;
-    y += dY;
-  }
+  bubble.move();
+  bubble.show();
 
-  fill(100, 0, 100);
-
-  circle(x, y,diam);
-
+  bubble2.move();
+  bubble2.show();
 }
 
+
 class Ball {
-  constructor (x, y, direction, speed) {
+  constructor (x, y, direction, speed, diam) {
     this.x = x;
     this.y = y;
     this.dX = cos(direction) * speed;
     this.dY = sin(direction) * speed;
-    this.r = diam / 2;
-    this.stop = false;
+    this.diam = diam;
   }
 
+  show() {
+    stroke(255);
+    strokeWeight(4);
+    fill(100, 0, 100);
+    circle(this.x, this.y,this.diam);
+  }
+
+  move() {
+    if (
+        (this.x + this.dX + this.diam/2) > width 
+        || 
+        (this.x + this.dX - this.diam / 2) < 0
+      ) {
+        this.dX = this.dX * -1;
+    } 
+    if (
+        (this.y + this.dY + this.diam/2) > height 
+        || 
+        (this.y + this.dY - this.diam/2) < 0
+      ) {
+      this.dY = this.dY * -1;
+    }
+  
+    //* Update X position if stop is false
+    if (stop == false) {
+      this.x += this.dX;
+      this.y += this.dY;
+    }
+  }
 }
