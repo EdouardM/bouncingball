@@ -1,4 +1,4 @@
-let stop, bubble, bubble2;
+let stop, ball, ball2;
 
 function setup() {
   createCanvas(800, 700);
@@ -6,7 +6,7 @@ function setup() {
   //* Initialize variables
   stop = false;
 
-  bubble = new Ball(
+  ball = new Ball(
     width /2
     , height / 2
     , random(0, PI)
@@ -14,7 +14,7 @@ function setup() {
     , 100
   )
   
-  bubble2 = new Ball(
+  ball2 = new Ball(
     width /4
     , height /4
     , random(0, PI)
@@ -24,7 +24,7 @@ function setup() {
 
 }
 
-//* Switch the stop variale
+//* Switch the stop variable
 function mousePressed() {
   if (stop == true) {
       stop = false;
@@ -37,11 +37,11 @@ function mousePressed() {
 function draw() {
   background(0);
 
-  bubble.move();
-  bubble.show();
+  ball.move();
+  ball.show();
 
-  bubble2.move();
-  bubble2.show();
+  ball2.move();
+  ball2.show();
 }
 
 
@@ -55,6 +55,9 @@ class Ball {
   }
 
   show() {
+    /*
+      Ball is displayed as a circle
+    */
     stroke(255);
     strokeWeight(4);
     fill(100, 0, 100);
@@ -62,13 +65,21 @@ class Ball {
   }
 
   move() {
+    /*
+      If ball hits vertical wall at 0 or canvas witdth
+      then it bounces back: dX -> -dX
+    */
     if (
         (this.x + this.dX + this.diam/2) > width 
         || 
         (this.x + this.dX - this.diam / 2) < 0
       ) {
         this.dX = this.dX * -1;
-    } 
+    }
+    /*
+      If ball hits horizontal wall at 0 or canvas height
+      then it bounces back: dY -> -dY
+    */
     if (
         (this.y + this.dY + this.diam/2) > height 
         || 
@@ -77,7 +88,7 @@ class Ball {
       this.dY = this.dY * -1;
     }
   
-    //* Update X position if stop is false
+    //* Update ball position if stop is false
     if (stop == false) {
       this.x += this.dX;
       this.y += this.dY;
