@@ -1,27 +1,23 @@
-let stop, ball, ball2;
+let stop, balls = [];
 
 function setup() {
   createCanvas(800, 700);
   
   //* Initialize variables
   stop = false;
+}
 
-  ball = new Ball(
-    width /2
-    , height / 2
+function mouseDragged() {
+
+  let ball = new Ball(
+    mouseX
+    , mouseY
     , random(0, PI)
-    , 10
-    , 100
-  )
+    , random(1, 20)
+    , random(10, 100)
+  );
   
-  ball2 = new Ball(
-    width /4
-    , height /4
-    , random(0, PI)
-    , 10
-    , 100
-  )
-
+  balls.push(ball);
 }
 
 //* Switch the stop variable
@@ -37,11 +33,11 @@ function mousePressed() {
 function draw() {
   background(0);
 
-  ball.move();
-  ball.show();
+  for (let ball of balls) {
+    ball.move();
+    ball.show();
+  }
 
-  ball2.move();
-  ball2.show();
 }
 
 
