@@ -1,14 +1,11 @@
-let stop, balls = [];
+let balls = [];
 
 function setup() {
   createCanvas(800, 700);
-  
-  //* Initialize variables
-  stop = false;
 }
 
 function mouseDragged() {
-
+  // Generate new ball
   let ball = new Ball(
     mouseX
     , mouseY
@@ -16,23 +13,25 @@ function mouseDragged() {
     , random(1, 20)
     , random(10, 100)
   );
-  
+  // Add new ball to the array
   balls.push(ball);
 }
 
-//* Switch the stop variable
 function mousePressed() {
-  if (stop == true) {
-      stop = false;
-  } 
-  else {
-      stop = true;
+  /* 
+    Check if the mouse is inside any ball
+  */
+  for (let ball of balls) {
+    ball.inside(mouseX, mouseY)
   }
 }
 
 function draw() {
   background(0);
 
+  /*
+    Move & display alls balls in array
+  */
   for (let ball of balls) {
     ball.move();
     ball.show();
@@ -48,15 +47,28 @@ class Ball {
     this.dX = cos(direction) * speed;
     this.dY = sin(direction) * speed;
     this.diam = diam;
+    this.stop = false;
+  }
+
+  /*
+    Check if ball is clicked
+  */
+  inside(px, py) {
+    // Dist btw/ Mouse & ball is smaller than radius 
+    let d = dist(px, py, this.x, this.y)
+    if ( d < this.diam / 2) {
+      // Switch stop flag
+      this.stop = !(this.stop);
+    }
   }
 
   show() {
     /*
       Ball is displayed as a circle
     */
-    stroke(255);
-    strokeWeight(4);
-    fill(100, 0, 100);
+    //stroke(255);
+    noStroke(4);
+    fill(255, 0, 0, 100);
     circle(this.x, this.y,this.diam);
   }
 
@@ -84,8 +96,10 @@ class Ball {
       this.dY = this.dY * -1;
     }
   
-    //* Update ball position if stop is false
-    if (stop == false) {
+    /* 
+      Update ball position if stop flag is false
+    */
+    if (!this.stop) {
       this.x += this.dX;
       this.y += this.dY;
     }
