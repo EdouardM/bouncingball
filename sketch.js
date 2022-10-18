@@ -19,10 +19,16 @@ function mouseDragged() {
 
 function mousePressed() {
   /* 
-    Check if the mouse is inside any ball
+    On click event, remove the ball when 
+    it contains the mouse
+    
   */
-  for (let ball of balls) {
-    ball.inside(mouseX, mouseY)
+  for (let i = balls.length-1; i >= 0; i --) {
+    // Check if the ball contains the mouse
+    if (balls[i].contains(mouseX, mouseY)) {
+      // Remove the ball from the array
+      balls.splice(i, 1)
+    }
   }
 }
 
@@ -53,13 +59,14 @@ class Ball {
   /*
     Check if ball is clicked
   */
-  inside(px, py) {
+  contains(px, py) {
     // Dist btw/ Mouse & ball is smaller than radius 
     let d = dist(px, py, this.x, this.y)
-    if ( d < this.diam / 2) {
-      // Switch stop flag
-      this.stop = !(this.stop);
-    }
+    return ( d < this.diam / 2 )
+  }
+
+  switch() {
+    this.stop = (!this.stop)
   }
 
   show() {
