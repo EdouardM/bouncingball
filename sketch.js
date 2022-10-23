@@ -5,13 +5,14 @@ function setup() {
 }
 
 function mouseDragged() {
+  
   // Generate new ball
   let ball = new Ball(
     mouseX
     , mouseY
     , random(0, PI)
-    , random(1, 20)
-    , random(10, 100)
+    , random(1, 5)
+    , random(5, 50)
   );
   // Add new ball to the array
   balls.push(ball);
@@ -52,55 +53,122 @@ function draw() {
     Move & display alls balls in array
   */
   for (let ball of balls) {
+    let highlight = false;
+    
+    for (let other of balls) {
+      if (ball != other && ball.intersects(other)) {
+        highlight = true;
+        
+      } else {
+        if (ball != other && ball.hit(other)) {
+          ball.bounce();
+        }
+      }
+      if (highlight) {
+        ball.highlight();
+      } else {
+        ball.normal();
+      }
+    }
     ball.move();
     ball.show();
-  }
+  } 
 
 }
 
-
 class Ball {
-  constructor (x, y, direction, speed, diam) {
+  constructor (
+      x, y
+      , direction
+      , speed
+      , r
+      , c = color(255,0,0)
+      , brightness = 100) {
     this.x = x;
     this.y = y;
     this.dX = cos(direction) * speed;
     this.dY = sin(direction) * speed;
-    this.diam = diam;
+    this.radius = r;
     this.stop = false;
+    this.color = c;
+    this.brightness = brightness;
   }
 
   /*
-    Check if ball is clicked
+    Check if one point is inside this ball
+    Parameters:
+    - px: point x coordinate
+    - py: point y coordinate
   */
   contains(px, py) {
-    // Dist btw/ Mouse & ball is smaller than radius 
     let d = dist(px, py, this.x, this.y)
-    return ( d < this.diam / 2 )
+    // Distance between point and this ball is smaller than this ball radius 
+    return ( d < this.radius )
+  }
+
+  /*
+    Check if this ball intersects another ball
+    Parameter: 
+    - other: other Ball
+  */
+  intersects(other) {
+    let d = dist(other.x, other.y, this.x, this.y)
+    // Distance is less than the sum of radius
+    return (d <= other.radius + this.radius)
+  }
+
+  hit(other) {
+    let d = dist(other.x + other.dX, other.y + other.dY, this.x + this.dX, this.y + this.dY)
+    // Distance is less than the sum of radius
+    return (d <= other.radius + this.radius)
+  }
+
+  bounce() {
+    this.dY = this.dY * -1;
+    this.dX = this.dX * -1;
   }
 
   switch() {
     this.stop = (!this.stop)
   }
 
+  highlight() {
+    this.color = color(0,0,180);
+    this.brightness = 180;
+  }
+
+  normal() {
+    this.color = color(255,0,0);
+    this.brightness = 100;
+  }
+
   show() {
     /*
       Ball is displayed as a circle
     */
-    //stroke(255);
     noStroke(4);
-    fill(255, 0, 0, 100);
-    circle(this.x, this.y,this.diam);
+    // Set color object 
+    let c = this.color;
+    
+    // Set alpha w/ this ball brightness
+    c.setAlpha(this.brightness);
+
+    // use color object to fill the ball
+    fill(c);
+
+    // draw the ball 
+    circle(this.x, this.y,this.radius * 2);
   }
 
   move() {
     /*
-      If ball hits vertical wall at 0 or canvas witdth
+      If ball hits vertical wall at 0 or canvas width
       then it bounces back: dX -> -dX
     */
     if (
-        (this.x + this.dX + this.diam/2) > width 
+        (this.x + this.dX + this.radius) > width 
         || 
-        (this.x + this.dX - this.diam / 2) < 0
+        (this.x + this.dX - this.radius) < 0
       ) {
         this.dX = this.dX * -1;
     }
@@ -109,9 +177,9 @@ class Ball {
       then it bounces back: dY -> -dY
     */
     if (
-        (this.y + this.dY + this.diam/2) > height 
+        (this.y + this.dY + this.radius) > height 
         || 
-        (this.y + this.dY - this.diam/2) < 0
+        (this.y + this.dY - this.radius) < 0
       ) {
       this.dY = this.dY * -1;
     }
