@@ -32,6 +32,19 @@ function mousePressed() {
   }
 }
 
+/*
+  When space key is pressed all balls 
+  freeze or unfreeze
+*/
+function keyPressed() {
+  // Space key is pressed
+  if (keyCode === 32) {
+    for (let ball of balls) {
+      ball.switch();
+    }
+  }
+}
+
 function draw() {
   background(0);
 
